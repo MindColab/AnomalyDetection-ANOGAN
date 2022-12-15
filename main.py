@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import matplotlib
-matplotlib.use('Qt5Agg')
+#matplotlib.use('Qt5Agg')
 
 import os
 import cv2
@@ -13,6 +13,7 @@ import anogan
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+OUTPUT = "./results"
 parser = argparse.ArgumentParser()
 parser.add_argument('--img_idx', type=int, default=14)
 parser.add_argument('--label_idx', type=int, default=7)
@@ -104,16 +105,19 @@ print ('%d label, %d : done'%(label_idx, img_idx), '%.2f'%score, '%.2fms'%time)
 plt.figure(1, figsize=(3, 3))
 plt.title('query image')
 plt.imshow(qurey.reshape(28,28), cmap=plt.cm.gray)
+plt.savefig(f'{OUTPUT}/{img_idx}_{label_idx}_query_image.png')
 
 print("anomaly score : ", score)
 plt.figure(2, figsize=(3, 3))
 plt.title('generated similar image')
 plt.imshow(pred.reshape(28,28), cmap=plt.cm.gray)
+plt.savefig(f'{OUTPUT}/{img_idx}_{label_idx}_generated_similar_image.png')
 
 plt.figure(3, figsize=(3, 3))
 plt.title('anomaly detection')
 plt.imshow(cv2.cvtColor(diff,cv2.COLOR_BGR2RGB))
-plt.show()
+plt.savefig(f'{OUTPUT}/{img_idx}_{label_idx}_anomaly_detection.png')
+#plt.show()
 
 
 ### 4. tsne feature view
@@ -128,6 +132,7 @@ print("random noise image")
 plt.figure(4, figsize=(2, 2))
 plt.title('random noise image')
 plt.imshow(random_image[0].reshape(28,28), cmap=plt.cm.gray)
+plt.savefig(f'{OUTPUT}/{img_idx}_{label_idx}_random_noise_image.png')
 
 # intermidieate output of discriminator
 model = anogan.feature_extractor()
@@ -142,9 +147,10 @@ anomaly_flag = np.array([1]*100+ [0]*300)
 
 X_embedded = TSNE(n_components=2).fit_transform(output)
 plt.figure(5)
-plt.title("t-SNE embedding on the feature representation")
+plt.title(f'{OUTPUT}/{img_idx}_{label_idx}_t-SNE embedding on the feature representation')
 plt.scatter(X_embedded[:100,0], X_embedded[:100,1], label='random noise(anomaly)')
 plt.scatter(X_embedded[100:400,0], X_embedded[100:400,1], label='mnist(anomaly)')
 plt.scatter(X_embedded[400:,0], X_embedded[400:,1], label='mnist(normal)')
 plt.legend()
-plt.show()
+plt.savefig(f'{OUTPUT}/{img_idx}_{label_idx}_t-SNE_embedding_on_the_feature_representation.png')
+#plt.show()
