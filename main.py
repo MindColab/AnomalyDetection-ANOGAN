@@ -14,6 +14,9 @@ import anogan
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 OUTPUT = "./results"
+os.makedirs('weights', exist_ok=True)
+os.makedirs(OUTPUT, exist_ok=True)
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--img_idx', type=int, default=14)
 parser.add_argument('--label_idx', type=int, default=7)
